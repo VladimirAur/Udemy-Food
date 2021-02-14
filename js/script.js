@@ -104,14 +104,21 @@ document.addEventListener('DOMContentLoaded', () =>{
         modal.classList.add('show');
         modal.classList.remove('hide');
         document.body.style.overflow = 'hidden';
-        clearInterval(modalTimerId);
+        // clearInterval(modalTimerId);
     }    
 
     function closeModal() {
         modal.classList.remove('show');
         modal.classList.add('hide');
         document.body.style.overflow = '';
-    }    
+    } 
+    
+    function showByScroll() {
+        if (window.pageYOffset + document.documentElement.clientHeight >= document.documentElement.scrollHeight){
+            openModal();
+            window.removeEventListener('scroll', showByScroll);
+        }
+    }
 
     modalTrigger.forEach(btn => {
         btn.addEventListener('click', openModal);
@@ -131,16 +138,73 @@ document.addEventListener('DOMContentLoaded', () =>{
         }
     });
 
-    const modalTimerId = setTimeout(openModal, 3000);
-
-    function showByScroll() {
-        if (window.pageYOffset + document.documentElement.clientHeight >= document.documentElement.scrollHeight){
-            openModal();
-            window.removeEventListener('scroll', showByScroll);
-        }
-    }
+    // const modalTimerId = setTimeout(openModal, 3000);
     
     window.addEventListener('scroll', showByScroll);
+
+    // Classes card
+
+    class MenuCard {
+        constructor(src, alt, title, desc, price, parentSelector){
+            this.src = src;
+            this.alt = alt;
+            this.title = title;
+            this.desc = desc;
+            this.price = price;
+            this.parent = document.querySelector(parentSelector);
+            this.transfer = 27;
+            this.changeToUAH();            
+        }//constructor
+
+        changeToUAH() {
+           this.price = this.price * this.transfer;
+        }
+
+        render() {            
+            const element = document.createElement('div');
+            element.innerHTML = `
+            <div class="menu__item">
+                <img src=${this.src} alt=${this.alt}>
+                <h3 class="menu__item-subtitle">${this.title}</h3>
+                <div class="menu__item-descr">${this.desc}</div>
+                <div class="menu__item-divider"></div>
+                <div class="menu__item-price">
+                    <div class="menu__item-cost">Цена:</div>
+                    <div class="menu__item-total"><span>${this.price}</span> грн/день</div>
+                </div>
+            </div>
+            `;
+
+            this.parent.append(element);
+        }//render
+
+    } //MenuCard
+
+    new MenuCard(
+        "img/tabs/elite.jpg",
+        "elite",
+        'Меню “Премиум”',
+        'В меню “Премиум” мы используем не только красивый дизайн упаковки, но и качественное исполнение блюд. Красная рыба, морепродукты, фрукты - ресторанное меню без похода в ресторан!',
+        9,
+        '.menu .container'
+    ).render();
+
+    new MenuCard(
+        "img/tabs/vegy.jpg",
+        "vegy",
+        'Меню "Фитнес"',
+        'Меню "Фитнес" - это новый подход к приготовлению блюд: больше свежих овощей и фруктов. Продукт активных и здоровых людей. Это абсолютно новый продукт с оптимальной ценой и высоким качеством!',
+        5,
+        '.menu .container'
+    ).render();
     
+    new MenuCard(
+        "img/tabs/post.jpg",
+        "post",
+        'Меню "Постное"',
+        'Меню “Постное” - это тщательный подбор ингредиентов: полное отсутствие продуктов животного происхождения, молоко из миндаля, овса, кокоса или гречки, правильное количество белков за счет тофу и импортных вегетарианских стейков.',
+        7,
+        '.menu .container'
+    ).render();
 
 });
