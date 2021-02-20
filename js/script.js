@@ -243,14 +243,21 @@ document.addEventListener('DOMContentLoaded', () =>{
             
             form.insertAdjacentElement('afterend',statusMessage);           
             
-            const formData = new FormData(form);            
+            const formData = new FormData(form); 
+            
+            const object = {};
+            formData.forEach(function(value, key){
+                object[key] = value;
+            });
 
-            fetch('server.php', {
+            
+
+            fetch('server1.php', {
                 method: "POST",
-                // headers: {
-                //     'Content-type': 'application/json'
-                // },
-                body: formData
+                headers: {
+                    'Content-type': 'application/json'
+                },
+                body: JSON.stringify(object)
             }).then(data => data.text())
             .then(data => {
                 console.log(data);
