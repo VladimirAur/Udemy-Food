@@ -241,28 +241,32 @@ document.addEventListener('DOMContentLoaded', () =>{
                 margin: 0 auto;
             `;
             
-            form.insertAdjacentElement('afterend',statusMessage);
-
-            const request = new XMLHttpRequest();
-            request.open('POST', 'server.php');
+            form.insertAdjacentElement('afterend',statusMessage);           
             
-            // request.setRequestHeader('Content-type', 'multipart/form-data');
-            const formData = new FormData(form);
+            const formData = new FormData(form);            
 
-            request.send(formData);
-
-            request.addEventListener('load', () => {
-                if (request.status === 200) {
-                    console.log(request.response);
-                    showThanksModal(message.succes);
-                    form.reset();                    
-                    statusMessage.remove();                
-                } else {
-                    showThanksModal(message.failure);
-                }
+            fetch('server.php', {
+                method: "POST",
+                // headers: {
+                //     'Content-type': 'application/json'
+                // },
+                body: formData
+            }).then(data => data.text())
+            .then(data => {
+                console.log(data);
+                showThanksModal(message.succes);                                  
+                statusMessage.remove(); 
+            }).catch(() => {
+                showThanksModal(message.failure);
+            }).finally(() =>{
+                form.reset();
             });
+
+
         });
     }//postData
+
+    
 
     function showThanksModal(message) {
         const prevModalDialog = document.querySelector('.modal__dialog');
