@@ -194,7 +194,7 @@ document.addEventListener('DOMContentLoaded', () =>{
         }
 
         return await res.json();
-    };
+    };//getResource
 
     getResource('http://localhost:3000/menu')
     .then(data => {
